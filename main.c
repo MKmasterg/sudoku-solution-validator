@@ -67,7 +67,38 @@ void* evaluate_columns(void* arg) {
     }
 }
 
+void* evaluate_box(void* arg) {
+    // This function evaluates the given box of sudoku
+    // returns 1 if the box is valid, 0 otherwise
+    // arg is a pointer to the specified box
+    int flag = 1;
+    int seen[9] = {0};
+    int *box = (int*)arg;
 
+    for (int i = 0; i < 3; i++){
+        for (int j = 0; j < 3; j++) {
+            if (seen[box[i*3 + j]] == 0){
+                seen[box[i*3 + j]] = 1;
+            } else {
+                flag = 0;
+                break;
+            }
+        }
+
+        if (flag == 0){
+            break;
+        }
+
+        for (int k = 0; k < 9; k++){
+            seen[k] = 0;
+        }
+    }
+    if (flag == 1){
+        return (void*)1;
+    } else {
+        return (void*)0;
+    }
+}
 
 int main(void) {
     return 0;
