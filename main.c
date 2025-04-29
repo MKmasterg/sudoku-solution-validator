@@ -81,9 +81,31 @@ void* evaluate_box(void* arg) {
     pthread_exit((void*)(long)flag);
 }
 
+int user_input(int sudoku[9][9]) {
+    // This function gets the sudoku board from the user
+    // returns 1 if the user provides a board, 0 otherwise
+    int defFlag = 0;
+    printf("Do you want to enter a Sudoku board? (1 for yes, 0 for no): ");
+    scanf("%d", &defFlag);
+    if (defFlag == 1) {
+        printf("Enter the Sudoku board (0 for empty cells):\n");
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                scanf("%d", &sudoku[i][j]);
+            }
+        }
+    }
+    return defFlag;
+}
+
 int main(void) {
-    // TODO : get the sudoku board from the user
-    int sudoku[9][9] = {
+    // Get the sudoku board from the user, if the user doesn't provide a board, use the default board
+    int sudoku[9][9] = {0};
+    int defFlag = 0;
+    defFlag = user_input(sudoku);
+
+    // default Sudoku board
+    int defSudoku[9][9] = {
             {5, 3, 4, 6, 7, 8, 9, 1, 2},
             {6, 7, 2, 1, 9, 5, 3, 4, 8},
             {1, 9, 8, 3, 4, 2, 5, 6, 7},
@@ -95,6 +117,22 @@ int main(void) {
             {3, 4, 5, 2, 8, 6, 1, 7, 9}
     };
 
+    if (defFlag == 0) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                sudoku[i][j] = defSudoku[i][j];
+            }
+        }
+    }
+
+    // Print the Sudoku board
+    printf("Validation Process for the Sudoku board:\n");
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            printf("%d ", sudoku[i][j]);
+        }
+        printf("\n");
+    }
 
     pthread_t threads[11];
     int threadIndex = 0;
@@ -138,6 +176,22 @@ int main(void) {
         printf("The Sudoku solution is valid.\n");
     } else {
         printf("The Sudoku solution is invalid.\n");
+        for (int i = 0; i < 11; i++) {
+            if (results[i] == 0) {
+                switch (i) {
+                    case 0:
+                        printf("Invalid rows.\n");
+                        break;
+                    case 1:
+                        printf("Invalid columns.\n");
+                        break;
+                    default:
+                        printf("Invalid box %d.\n", i - 1);
+                        continue;
+
+                }
+            }
+        }
     }
 
     return 0;
