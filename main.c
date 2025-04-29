@@ -11,8 +11,8 @@ void* evaluate_rows(void* arg) {
     int *board = (int*)arg;
     for (int i = 0; i < 9; i++){
         for (int j = 0; j < 9; j++) {
-            if (seen[board[i*9 + j]] == 0){
-                seen[board[i*9 + j]] = 1;
+            if (seen[board[i*9 + j] - 1] == 0){
+                seen[board[i*9 + j] - 1] = 1;
             } else {
                 flag = 0;
                 break;
@@ -28,11 +28,7 @@ void* evaluate_rows(void* arg) {
         }
 
     }
-    if (flag == 1){
-        return (void*)1;
-    } else {
-        return (void*)0;
-    }
+    pthread_exit((void*)(long)flag);
 }
 
 void* evaluate_columns(void* arg) {
@@ -44,8 +40,8 @@ void* evaluate_columns(void* arg) {
     int *board = (int*)arg;
     for (int i = 0; i < 9; i++){
         for (int j = 0; j < 9; j++) {
-            if (seen[board[j*9 + i]] == 0){
-                seen[board[j*9 + i]] = 1;
+            if (seen[board[j*9 + i] - 1] == 0){
+                seen[board[j*9 + i] - 1] = 1;
             } else {
                 flag = 0;
                 break;
@@ -61,11 +57,7 @@ void* evaluate_columns(void* arg) {
         }
 
     }
-    if (flag == 1){
-        return (void*)1;
-    } else {
-        return (void*)0;
-    }
+    pthread_exit((void*)(long)flag);
 }
 
 void* evaluate_box(void* arg) {
@@ -76,29 +68,17 @@ void* evaluate_box(void* arg) {
     int seen[9] = {0};
     int *box = (int*)arg;
 
-    for (int i = 0; i < 3; i++){
-        for (int j = 0; j < 3; j++) {
-            if (seen[box[i*3 + j]] == 0){
-                seen[box[i*3 + j]] = 1;
-            } else {
-                flag = 0;
-                break;
-            }
-        }
-
-        if (flag == 0){
+    for (int i = 0; i < 9; i++) {
+        int val = box[i];
+        if (val < 1 || val > 9 || seen[val - 1]) {
+            flag = 0;
             break;
         }
+        seen[val - 1] = 1;
+    }
 
-        for (int k = 0; k < 9; k++){
-            seen[k] = 0;
-        }
-    }
-    if (flag == 1){
-        return (void*)1;
-    } else {
-        return (void*)0;
-    }
+    free(box);
+    pthread_exit((void*)(long)flag);
 }
 
 int main(void) {
@@ -116,9 +96,9 @@ int main(void) {
     };
 
 
-    pthread_t threads[27];
+    pthread_t threads[11];
     int threadIndex = 0;
-    int results[27];
+    int results[11];
 
     // Create threads for rows
     pthread_create(&threads[threadIndex++], NULL, evaluate_rows, (void*)sudoku);
@@ -138,9 +118,8 @@ int main(void) {
             pthread_create(&threads[threadIndex++], NULL, evaluate_box, (void*)box);
         }
     }
-
     // Join threads and collect results
-    for (int i = 0; i < 27; i++) {
+    for (int i = 0; i < 11; i++) {
         void *result;
         pthread_join(threads[i], &result);
         results[i] = (int)(long)result;
@@ -148,7 +127,7 @@ int main(void) {
 
     // Check results
     int isValid = 1;
-    for (int i = 0; i < 27; i++) {
+    for (int i = 0; i < 11; i++) {
         if (results[i] == 0) {
             isValid = 0;
             break;
