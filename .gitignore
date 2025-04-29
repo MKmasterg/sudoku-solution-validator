@@ -1,0 +1,85 @@
+# === CLion specific ===
+.idea/
+cmake-build-*/
+
+# === CMake files ===
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+CTestTestfile.cmake
+*.cmake
+build/
+_build/
+out/
+
+# === Compiled object files ===
+*.o
+*.obj
+
+# === Executables and binaries ===
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+*.elf
+
+# === Static and dynamic libraries ===
+*.a
+*.lib
+*.so
+*.so.*
+*.dylib
+*.dll
+
+# === Debugging / profiling files ===
+*.dSYM/
+*.gcno
+*.gcda
+*.gcov
+*.gch
+*.pdb
+*.map
+*.mem
+*.stackdump
+
+# === Logs and temp files ===
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# === OS-specific ===
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.cache/
+Trash-*/
+
+# === clangd/IDE helper files ===
+.clangd/
+compile_commands.json
+
+# === Valgrind/memcheck outputs ===
+vgcore.*
+
+# === Misc ===
+tags
+*.tar.gz
+*.zip
+
+# Optional: ignore test outputs
+test_output/
